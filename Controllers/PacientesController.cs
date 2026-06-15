@@ -20,12 +20,14 @@ namespace Projeto1_Web2_IF_Lucas.Controllers
             _context = context;
         }
 
+        // Lucas Wilman da Silva Crispim
         // GET: Pacientes
         public async Task<IActionResult> Index()
         {
             return View(await _context.Pacientes.ToListAsync());
         }
 
+        // Lucas Wilman da Silva Crispim
         // GET: Pacientes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -44,6 +46,7 @@ namespace Projeto1_Web2_IF_Lucas.Controllers
             return View(paciente);
         }
 
+        // Lucas Wilman da Silva Crispim
         // GET: Pacientes/Create
         public IActionResult Create()
         {
@@ -53,6 +56,7 @@ namespace Projeto1_Web2_IF_Lucas.Controllers
         // POST: Pacientes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Lucas Wilman da Silva Crispim
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nome,Cpf,DataNascimento,Email,Telefone")] Paciente paciente)
@@ -66,6 +70,7 @@ namespace Projeto1_Web2_IF_Lucas.Controllers
             return View(paciente);
         }
 
+        // Lucas Wilman da Silva Crispim
         // GET: Pacientes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -85,6 +90,7 @@ namespace Projeto1_Web2_IF_Lucas.Controllers
         // POST: Pacientes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Lucas Wilman da Silva Crispim
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Cpf,DataNascimento,Email,Telefone")] Paciente paciente)
@@ -117,6 +123,7 @@ namespace Projeto1_Web2_IF_Lucas.Controllers
             return View(paciente);
         }
 
+        // Lucas Wilman da Silva Crispim
         // GET: Pacientes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -135,6 +142,7 @@ namespace Projeto1_Web2_IF_Lucas.Controllers
             return View(paciente);
         }
 
+        // Lucas Wilman da Silva Crispim
         // POST: Pacientes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
