@@ -1,0 +1,126 @@
+﻿@model IEnumerable<Projeto1_Web2_IF_Lucas.Models.TbPaciente>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rg)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cpf)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataNascimento)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NomeResponsavel)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Sexo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Etnia)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Endereco)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Bairro)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TelResidencial)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TelComercial)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TelCelular)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Profissao)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FlgAtleta)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FlgGestante)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdCidadeNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nome)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rg)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cpf)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataNascimento)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NomeResponsavel)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sexo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Etnia)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Endereco)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Bairro)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TelResidencial)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TelComercial)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TelCelular)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Profissao)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FlgAtleta)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FlgGestante)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdCidadeNavigation.IdCidade)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdPaciente">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.IdPaciente">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdPaciente">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

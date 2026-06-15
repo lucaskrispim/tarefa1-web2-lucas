@@ -1,0 +1,31 @@
+{
+   "CodeGenerationMode": 4,
+   "ContextClassName": "db_ifContext",
+   "ContextNamespace": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": "Models",
+   "OutputPath": "Models",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "Projeto1_Web2_IF_Lucas",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 2,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "Name": "[dbo].[tbPaciente]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tbCidade]",
+         "ObjectType": 0
+      }
+   ],
+   "UseDatabaseNames": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNullableReferenceTypes": false,
+   "UseT4": false
+}
