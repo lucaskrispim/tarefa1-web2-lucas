@@ -1,0 +1,54 @@
+@model IEnumerable<Projeto1_Web2_IF_Lucas.Models.TbProfissional>
+@*
+    Lucas Wilman da Silva Crispim
+    Listagem de profissionais para o gerente (já filtrada por escopo no controller).
+*@
+@{
+    ViewData["Title"] = "Profissionais";
+}
+
+<h1>Profissionais</h1>
+
+@if (TempData["Mensagem"] != null)
+{
+    <div class="alert alert-success">@TempData["Mensagem"]</div>
+}
+@if (TempData["Erro"] != null)
+{
+    <div class="alert alert-danger">@TempData["Erro"]</div>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Tipo</th>
+            <th>CPF</th>
+            <th>CRM/CRN</th>
+            <th>Cidade</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.Nome</td>
+                <td>@p.IdTipoProfissionalNavigation?.Nome</td>
+                <td>@p.Cpf</td>
+                <td>@p.CrmCrn</td>
+                <td>@p.IdCidadeNavigation?.Nome</td>
+                <td>
+                    <a asp-action="Detalhes" asp-route-id="@p.IdProfissional">Detalhes</a> |
+                    <a asp-action="Editar" asp-route-id="@p.IdProfissional">Editar</a> |
+                    <a asp-action="Excluir" asp-route-id="@p.IdProfissional">Excluir</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">Nenhum profissional cadastrado no seu escopo.</p>
+}

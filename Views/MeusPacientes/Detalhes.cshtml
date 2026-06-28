@@ -1,0 +1,45 @@
+@model Projeto1_Web2_IF_Lucas.Models.TbPaciente
+@*
+    Lucas Wilman da Silva Crispim
+    Detalhes de um paciente do profissional logado (somente leitura).
+*@
+@{
+    ViewData["Title"] = "Detalhes do paciente";
+}
+
+<h1>Detalhes do paciente</h1>
+
+<dl class="row">
+    <dt class="col-sm-3">Nome</dt>
+    <dd class="col-sm-9">@Model.Nome</dd>
+
+    <dt class="col-sm-3">CPF / RG</dt>
+    <dd class="col-sm-9">@Model.Cpf / @Model.Rg</dd>
+
+    <dt class="col-sm-3">Nascimento</dt>
+    <dd class="col-sm-9">@Model.DataNascimento.ToString("dd/MM/yyyy")</dd>
+
+    <dt class="col-sm-3">Sexo</dt>
+    <dd class="col-sm-9">@Model.Sexo</dd>
+
+    <dt class="col-sm-3">Responsável</dt>
+    <dd class="col-sm-9">@Model.NomeResponsavel</dd>
+
+    <dt class="col-sm-3">Endereço</dt>
+    <dd class="col-sm-9">@Model.Endereco - @Model.Bairro</dd>
+
+    <dt class="col-sm-3">Cidade</dt>
+    <dd class="col-sm-9">@Model.IdCidadeNavigation?.Nome</dd>
+
+    <dt class="col-sm-3">Telefones</dt>
+    <dd class="col-sm-9">@Model.TelCelular @Model.TelResidencial</dd>
+
+    <dt class="col-sm-3">Profissão</dt>
+    <dd class="col-sm-9">@Model.Profissao</dd>
+
+    <dt class="col-sm-3">Anotações</dt>
+    <dd class="col-sm-9">@ViewData["InformacaoResumida"]</dd>
+</dl>
+
+<a asp-action="Editar" asp-route-id="@Model.IdPaciente" class="btn btn-primary">Editar</a>
+<a asp-action="Index" class="btn btn-secondary">Voltar</a>

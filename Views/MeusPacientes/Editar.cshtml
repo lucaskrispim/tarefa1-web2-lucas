@@ -1,0 +1,21 @@
+@model Projeto1_Web2_IF_Lucas.Models.TbPaciente
+@*
+    Lucas Wilman da Silva Crispim
+    Edição de um paciente do profissional logado.
+*@
+@{
+    ViewData["Title"] = "Editar paciente";
+}
+
+<h1>Editar paciente</h1>
+
+<form asp-action="Editar" asp-route-id="@Model.IdPaciente" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <partial name="_CamposPaciente" />
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

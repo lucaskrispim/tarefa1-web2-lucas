@@ -79,4 +79,8 @@ public partial class TbPaciente
     [ForeignKey("IdCidade")]
     [InverseProperty("TbPaciente")]
     public virtual TbCidade IdCidadeNavigation { get; set; }
+
+    // Lucas Wilman da Silva Crispim - vínculos do paciente com profissionais (Trabalho Final).
+    [InverseProperty("IdPacienteNavigation")]
+    public virtual ICollection<TbMedicoPaciente> TbMedicoPaciente { get; set; } = new List<TbMedicoPaciente>();
 }

@@ -1,3 +1,69 @@
+# Trabalho Final — Programação Web II (em desenvolvimento)
+
+**Aluno:** Lucas Wilman da Silva Crispim
+
+Sistema da Central de Saúde sobre o banco **`db_if`** (design mantido). Desenvolvimento em
+**SQLite** (`db_if.sqlite`), criado por migrations no startup. Plano completo em
+[`PLANO_TRABALHO_FINAL.md`](PLANO_TRABALHO_FINAL.md).
+
+## Como rodar
+
+```bash
+dotnet run
+```
+
+O banco SQLite é criado e populado (seed) automaticamente no primeiro start.
+
+## Usuários Gerentes (criados via seed, direto no banco)
+
+> O Requisito 2 pede os 3 gerentes com as Roles **associadas diretamente no banco**. Isso é feito
+> por um seed idempotente no startup (`Data/DbInitializer.cs`) usando `RoleManager`/`UserManager` —
+> equivale a um script SQL, porém respeitando o hash de senha do ASP.NET Core Identity. Senha de
+> todos: **`Gerente@123`** (credenciais de demonstração).
+
+| Login | Role | Acesso |
+|-------|------|--------|
+| `gerentegeral@saude.local` | `GerenteGeral` | Todos os profissionais |
+| `gerentemedico@saude.local` | `GerenteMedico` | Só profissionais Médicos |
+| `gerentenutri@saude.local` | `GerenteNutricionista` | Só profissionais Nutricionistas |
+
+Profissionais (Médico/Nutricionista) se **auto-registram** em `/Identity/Account/Register`.
+Gerentes existem **apenas** via seed (não há registro de gerente).
+
+## Funcionalidades extras implementadas
+
+- **Planos por tipo:** no registro, só aparecem os planos do tipo escolhido (Médico/Nutri),
+  validado também no servidor.
+- **Exclusão em cascata (opcional):** ao excluir um profissional que tem pacientes, o gerente
+  pode optar pela exclusão em cascata, que remove o profissional **e os pacientes exclusivos**
+  (vinculados só a ele); pacientes compartilhados com outro profissional são **preservados**
+  (remove-se apenas o vínculo). *Limitação conhecida:* a conta de login (Identity) é removida
+  fora da transação do `db_if`; se essa etapa falhar, o gerente é avisado para removê-la manualmente.
+
+## Arquitetura
+
+A lógica de negócio fica numa **camada de serviço** (`Services/`: `IRegistroService`,
+`IProfissionalService`, `IPacienteService`), deixando os controllers finos (só HTTP: ModelState,
+`TryUpdateModelAsync`, autenticação, autorização por Role e redirecionamentos). Os serviços
+retornam tipos de resultado (`RegistroResultado`, `ExclusaoResultado`) em vez de depender de
+detalhes web. Registro via DI com tempo de vida *Scoped* (mesmo `DbContext` por request).
+
+## Testes
+
+Bateria em `tests/` com **48 testes** (`dotnet test`):
+
+- **Integração** (xUnit + `WebApplicationFactory`, SQLite temporário): sobe o app real e cobre os
+  3 requisitos e as regras de segurança (registro, ownership de pacientes, escopo dos gerentes,
+  CPF não-editável pelo profissional, exclusão e cascata).
+- **Unitários** (xUnit + SQLite in-memory + Moq): testam os serviços isoladamente
+  (`tests/Unit/`) — validação, compensação, escopo, cascata e ownership.
+
+```bash
+dotnet test
+```
+
+---
+
 # Projeto1_Web2_IF_Lucas — Tarefa de acompanhamento 1
 
 **Aluno:** Lucas Wilman da Silva Crispim
@@ -84,12 +150,30 @@ foram obtidos por **engenharia reversa** do banco **`db_if`** (SQL Server) usand
 - Model `TbPaciente` e `TbCidade` no padrão gerado pelo EF Core Power Tools (`Models/`).
 - Contexto `db_ifContext` (`Models/db_ifContext.cs`) usando **SQL Server** (banco `db_if`).
 - Controller **`TbPacientesController`** com os actions vistos nas aulas:
-  **Create (com `[Bind]`), Details, Edit, EditPost, Delete e DeleteConfirmed**
+  **Create, Details, Edit, EditPost, Delete e DeleteConfirmed**
   (nome do aluno comentado em cada action).
 - Views de `TbPacientes` (Index, Create, Edit, Details, Delete).
 - Arquivo **`jquery.validate.pt-br.js`** (tradução pt-BR), referenciado em
   `Views/Shared/_ValidationScriptsPartial.cshtml`.
 - Prints do código em `prints_tarefa2/` (gerados por `gerar_prints.py`).
+
+## Correções aplicadas (revisão do professor)
+
+Seguindo o tutorial indicado no enunciado e mostrado na aula 3
+([Microsoft – CRUD com EF Core](https://learn.microsoft.com/en-us/aspnet/core/data/ef-mvc/crud?view=aspnetcore-8.0)):
+
+- **Tratamento de exceções (`try-catch` com `DbUpdateException`)** nos métodos que
+  gravam no banco:
+  - `Create` — em caso de falha ao salvar, adiciona erro ao `ModelState` e re-exibe a view.
+  - `EditPost` — `try-catch` em volta do `SaveChangesAsync`.
+  - `DeleteConfirmed` — `try-catch`; se falhar, redireciona para `Delete` com
+    `saveChangesError = true`, e o `Delete` (GET) exibe a mensagem via
+    `ViewData["ErrorMessage"]` na view `Delete.cshtml`.
+- **`TryUpdateModelAsync` no Edit (POST), no lugar de `[Bind]`:** o `EditPost` agora
+  carrega a entidade do banco (`FirstOrDefaultAsync`) e usa
+  `TryUpdateModelAsync<TbPaciente>` listando explicitamente as propriedades atualizáveis.
+  Essa é a abordagem recomendada no tutorial/aula — protege contra *overposting* sem
+  depender do `[Bind]`.
 
 ## Ligação com o banco de dados
 

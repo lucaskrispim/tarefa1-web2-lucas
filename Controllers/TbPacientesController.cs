@@ -2,14 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Projeto1_Web2_IF_Lucas.Data;
 using Projeto1_Web2_IF_Lucas.Models;
 
 // Lucas Wilman da Silva Crispim
 namespace Projeto1_Web2_IF_Lucas.Controllers
 {
+    // LEGADO (Tarefa de acompanhamento 2 - Database First). Não faz parte do fluxo do Trabalho
+    // Final; restrito a GerenteGeral para não expor pacientes sem filtro. O CRUD do final é MeusPacientes.
+    [Authorize(Roles = DbInitializer.RoleGerenteGeral)]
     public class TbPacientesController : Controller
     {
         private readonly db_ifContext _context;
@@ -63,11 +68,21 @@ namespace Projeto1_Web2_IF_Lucas.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdPaciente,Nome,Rg,Cpf,DataNascimento,NomeResponsavel,Sexo,Etnia,Endereco,Bairro,IdCidade,TelResidencial,TelComercial,TelCelular,Profissao,FlgAtleta,FlgGestante")] TbPaciente tbPaciente)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(tbPaciente);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.Add(tbPaciente);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                // Registre o erro (uncomment ex variable name and write a log).
+                ModelState.AddModelError("", "Não foi possível salvar as alterações. " +
+                    "Tente novamente e, se o problema persistir, " +
+                    "contate o administrador do sistema.");
             }
             ViewData["IdCidade"] = new SelectList(_context.TbCidade, "IdCidade", "Nome", tbPaciente.IdCidade);
             return View(tbPaciente);
@@ -92,45 +107,54 @@ namespace Projeto1_Web2_IF_Lucas.Controllers
         }
 
         // POST: TbPacientes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Conforme o tutorial da Microsoft (CRUD - EF Core), usa-se TryUpdateModelAsync
+        // em vez de [Bind], evitando overposting e atualizando apenas as propriedades informadas.
         // Lucas Wilman da Silva Crispim
-        [HttpPost]
+        [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdPaciente,Nome,Rg,Cpf,DataNascimento,NomeResponsavel,Sexo,Etnia,Endereco,Bairro,IdCidade,TelResidencial,TelComercial,TelCelular,Profissao,FlgAtleta,FlgGestante")] TbPaciente tbPaciente)
+        public async Task<IActionResult> EditPost(int? id)
         {
-            if (id != tbPaciente.IdPaciente)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var tbPacienteToUpdate = await _context.TbPaciente
+                .FirstOrDefaultAsync(p => p.IdPaciente == id);
+
+            if (tbPacienteToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            if (await TryUpdateModelAsync<TbPaciente>(
+                tbPacienteToUpdate,
+                "",
+                p => p.Nome, p => p.Rg, p => p.Cpf, p => p.DataNascimento,
+                p => p.NomeResponsavel, p => p.Sexo, p => p.Etnia, p => p.Endereco,
+                p => p.Bairro, p => p.IdCidade, p => p.TelResidencial, p => p.TelComercial,
+                p => p.TelCelular, p => p.Profissao, p => p.FlgAtleta, p => p.FlgGestante))
             {
                 try
                 {
-                    _context.Update(tbPaciente);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateException /* ex */)
                 {
-                    if (!TbPacienteExists(tbPaciente.IdPaciente))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    // Registre o erro (uncomment ex variable name and write a log).
+                    ModelState.AddModelError("", "Não foi possível salvar as alterações. " +
+                        "Tente novamente e, se o problema persistir, " +
+                        "contate o administrador do sistema.");
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["IdCidade"] = new SelectList(_context.TbCidade, "IdCidade", "Nome", tbPaciente.IdCidade);
-            return View(tbPaciente);
+            ViewData["IdCidade"] = new SelectList(_context.TbCidade, "IdCidade", "Nome", tbPacienteToUpdate.IdCidade);
+            return View(tbPacienteToUpdate);
         }
 
         // Lucas Wilman da Silva Crispim
         // GET: TbPacientes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
             if (id == null)
             {
@@ -139,10 +163,18 @@ namespace Projeto1_Web2_IF_Lucas.Controllers
 
             var tbPaciente = await _context.TbPaciente
                 .Include(t => t.IdCidadeNavigation)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.IdPaciente == id);
             if (tbPaciente == null)
             {
                 return NotFound();
+            }
+
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewData["ErrorMessage"] =
+                    "Não foi possível excluir. Tente novamente e, se o problema persistir, " +
+                    "contate o administrador do sistema.";
             }
 
             return View(tbPaciente);
@@ -155,13 +187,22 @@ namespace Projeto1_Web2_IF_Lucas.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var tbPaciente = await _context.TbPaciente.FindAsync(id);
-            if (tbPaciente != null)
+            if (tbPaciente == null)
             {
-                _context.TbPaciente.Remove(tbPaciente);
+                return RedirectToAction(nameof(Index));
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                _context.TbPaciente.Remove(tbPaciente);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                // Registre o erro (uncomment ex variable name and write a log).
+                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
+            }
         }
 
         private bool TbPacienteExists(int id)

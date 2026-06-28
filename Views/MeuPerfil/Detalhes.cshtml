@@ -1,0 +1,58 @@
+@model Projeto1_Web2_IF_Lucas.Models.TbProfissional
+@*
+    Lucas Wilman da Silva Crispim
+    Visualização dos dados do próprio profissional (somente leitura).
+*@
+@{
+    ViewData["Title"] = "Meu cadastro";
+}
+
+<h1>Meu cadastro</h1>
+
+@if (TempData["Mensagem"] != null)
+{
+    <div class="alert alert-success">@TempData["Mensagem"]</div>
+}
+
+<dl class="row">
+    <dt class="col-sm-3">Nome</dt>
+    <dd class="col-sm-9">@Model.Nome</dd>
+
+    <dt class="col-sm-3">Tipo</dt>
+    <dd class="col-sm-9">@Model.IdTipoProfissionalNavigation?.Nome</dd>
+
+    <dt class="col-sm-3">CPF</dt>
+    <dd class="col-sm-9">@Model.Cpf</dd>
+
+    <dt class="col-sm-3">CRM / CRN</dt>
+    <dd class="col-sm-9">@Model.CrmCrn</dd>
+
+    <dt class="col-sm-3">Especialidade</dt>
+    <dd class="col-sm-9">@Model.Especialidade</dd>
+
+    <dt class="col-sm-3">Endereço</dt>
+    <dd class="col-sm-9">
+        @Model.Logradouro, @Model.Numero - @Model.Bairro
+        @if (!string.IsNullOrWhiteSpace(Model.Cep)) { <text>(CEP @Model.Cep)</text> }
+    </dd>
+
+    <dt class="col-sm-3">Cidade / UF</dt>
+    <dd class="col-sm-9">@(Model.IdCidadeNavigation?.Nome ?? Model.Cidade) / @Model.Estado</dd>
+
+    <dt class="col-sm-3">Telefone</dt>
+    <dd class="col-sm-9">
+        @if (!string.IsNullOrWhiteSpace(Model.Telefone1)) { <text>(@Model.Ddd1) @Model.Telefone1</text> }
+    </dd>
+
+    <dt class="col-sm-3">Plano</dt>
+    <dd class="col-sm-9">@Model.IdContratoNavigation?.IdPlanoNavigation?.Nome</dd>
+
+    <dt class="col-sm-3">Vigência do contrato</dt>
+    <dd class="col-sm-9">
+        @Model.IdContratoNavigation?.DataInicio?.ToString("dd/MM/yyyy")
+        a
+        @Model.IdContratoNavigation?.DataFim?.ToString("dd/MM/yyyy")
+    </dd>
+</dl>
+
+<a asp-action="Editar" class="btn btn-primary">Editar</a>

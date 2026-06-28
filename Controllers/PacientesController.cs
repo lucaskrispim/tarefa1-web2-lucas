@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,9 @@ using Projeto1_Web2_IF_Lucas.Models;
 // Lucas Wilman da Silva Crispim
 namespace Projeto1_Web2_IF_Lucas.Controllers
 {
+    // LEGADO (Tarefa de acompanhamento 1 - Code First). Não faz parte do fluxo do Trabalho Final;
+    // restrito a GerenteGeral para não expor pacientes sem filtro. O CRUD do final é MeusPacientes.
+    [Authorize(Roles = DbInitializer.RoleGerenteGeral)]
     public class PacientesController : Controller
     {
         private readonly ApplicationDbContext _context;

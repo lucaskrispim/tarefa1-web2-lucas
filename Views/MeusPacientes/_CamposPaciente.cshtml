@@ -1,0 +1,111 @@
+@model Projeto1_Web2_IF_Lucas.Models.TbPaciente
+@*
+    Lucas Wilman da Silva Crispim
+    Campos compartilhados entre Criar e Editar do paciente.
+*@
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="Nome" class="form-label"></label>
+        <input asp-for="Nome" class="form-control" />
+        <span asp-validation-for="Nome" class="text-danger"></span>
+    </div>
+    <div class="col-md-3 mb-3">
+        <label asp-for="Cpf" class="form-label">CPF</label>
+        <input asp-for="Cpf" class="form-control" />
+        <span asp-validation-for="Cpf" class="text-danger"></span>
+    </div>
+    <div class="col-md-3 mb-3">
+        <label asp-for="Rg" class="form-label">RG</label>
+        <input asp-for="Rg" class="form-control" />
+        <span asp-validation-for="Rg" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-3">
+        <label asp-for="DataNascimento" class="form-label">Data de nascimento</label>
+        <input asp-for="DataNascimento" type="date" class="form-control" />
+        <span asp-validation-for="DataNascimento" class="text-danger"></span>
+    </div>
+    <div class="col-md-2 mb-3">
+        <label asp-for="Sexo" class="form-label"></label>
+        <select asp-for="Sexo" class="form-select">
+            <option value="">--</option>
+            <option value="M">Masculino</option>
+            <option value="F">Feminino</option>
+        </select>
+        <span asp-validation-for="Sexo" class="text-danger"></span>
+    </div>
+    <div class="col-md-2 mb-3">
+        <label asp-for="Etnia" class="form-label"></label>
+        <select asp-for="Etnia" class="form-select">
+            <option value="">(selecione)</option>
+            <option value="1">Branca</option>
+            <option value="2">Preta</option>
+            <option value="3">Parda</option>
+            <option value="4">Amarela</option>
+            <option value="5">Indígena</option>
+        </select>
+        <span asp-validation-for="Etnia" class="text-danger"></span>
+    </div>
+    <div class="col-md-5 mb-3">
+        <label asp-for="NomeResponsavel" class="form-label">Nome do responsável</label>
+        <input asp-for="NomeResponsavel" class="form-control" />
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="Endereco" class="form-label"></label>
+        <input asp-for="Endereco" class="form-control" />
+    </div>
+    <div class="col-md-3 mb-3">
+        <label asp-for="Bairro" class="form-label"></label>
+        <input asp-for="Bairro" class="form-control" />
+    </div>
+    <div class="col-md-3 mb-3">
+        <label asp-for="IdCidade" class="form-label">Cidade</label>
+        <select asp-for="IdCidade" asp-items="ViewBag.IdCidade" class="form-select">
+            <option value="">-- Selecione --</option>
+        </select>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <label asp-for="TelCelular" class="form-label">Celular</label>
+        <input asp-for="TelCelular" class="form-control" />
+    </div>
+    <div class="col-md-4 mb-3">
+        <label asp-for="TelResidencial" class="form-label">Tel. residencial</label>
+        <input asp-for="TelResidencial" class="form-control" />
+    </div>
+    <div class="col-md-4 mb-3">
+        <label asp-for="Profissao" class="form-label"></label>
+        <input asp-for="Profissao" class="form-control" />
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-3">
+        <label asp-for="FlgAtleta" class="form-label">Atleta</label>
+        <select asp-for="FlgAtleta" class="form-select">
+            <option value="">(não informado)</option>
+            <option value="true">Sim</option>
+            <option value="false">Não</option>
+        </select>
+    </div>
+    <div class="col-md-3 mb-3">
+        <label asp-for="FlgGestante" class="form-label">Gestante</label>
+        <select asp-for="FlgGestante" class="form-select">
+            <option value="">(não informado)</option>
+            <option value="true">Sim</option>
+            <option value="false">Não</option>
+        </select>
+    </div>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Informação resumida (anotações deste profissional)</label>
+    <textarea name="informacaoResumida" class="form-control" rows="3">@ViewData["InformacaoResumida"]</textarea>
+</div>

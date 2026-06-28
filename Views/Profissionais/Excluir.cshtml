@@ -1,0 +1,82 @@
+@model Projeto1_Web2_IF_Lucas.Models.ViewModels.ExcluirProfissionalViewModel
+@*
+    Lucas Wilman da Silva Crispim
+    Confirmação de exclusão de profissional.
+    - Sem pacientes: exclusão normal.
+    - Com pacientes: oferece a exclusão EM CASCATA (item extra), que remove o profissional
+      junto dos pacientes EXCLUSIVOS dele; pacientes compartilhados são preservados.
+*@
+@{
+    ViewData["Title"] = "Excluir profissional";
+}
+
+<h1>Excluir profissional</h1>
+
+@if (TempData["Erro"] != null)
+{
+    <div class="alert alert-danger">@TempData["Erro"]</div>
+}
+
+<dl class="row">
+    <dt class="col-sm-3">Nome</dt>
+    <dd class="col-sm-9">@Model.Profissional.Nome</dd>
+
+    <dt class="col-sm-3">Tipo</dt>
+    <dd class="col-sm-9">@Model.Profissional.IdTipoProfissionalNavigation?.Nome</dd>
+
+    <dt class="col-sm-3">CPF</dt>
+    <dd class="col-sm-9">@Model.Profissional.Cpf</dd>
+
+    <dt class="col-sm-3">Cidade</dt>
+    <dd class="col-sm-9">@Model.Profissional.IdCidadeNavigation?.Nome</dd>
+</dl>
+
+@if (!Model.TemPacientes)
+{
+    <h4 class="text-danger">Tem certeza que deseja excluir este profissional?</h4>
+    <form asp-action="Excluir" asp-route-id="@Model.Profissional.IdProfissional" method="post">
+        <button type="submit" class="btn btn-danger">Excluir</button>
+        <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+    </form>
+}
+else
+{
+    <div class="alert alert-warning">
+        Este profissional possui <strong>@Model.Pacientes.Count paciente(s)</strong> vinculado(s).
+        A exclusão em cascata removerá o profissional e os
+        <strong>@Model.QtdExclusivos paciente(s) exclusivo(s)</strong> (vinculados somente a ele).
+        Pacientes compartilhados com outro profissional serão preservados.
+    </div>
+
+    <table class="table table-sm">
+        <thead>
+            <tr><th>Paciente</th><th>Situação</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model.Pacientes)
+            {
+                <tr>
+                    <td>@p.Nome</td>
+                    <td>
+                        @if (p.Exclusivo)
+                        {
+                            <span class="badge bg-danger">Exclusivo — será excluído</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Compartilhado — será mantido</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <form asp-action="Excluir" asp-route-id="@Model.Profissional.IdProfissional" method="post">
+        <input type="hidden" name="cascata" value="true" />
+        <button type="submit" class="btn btn-danger">
+            Excluir profissional e pacientes exclusivos (cascata)
+        </button>
+        <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+    </form>
+}

@@ -1,0 +1,31 @@
+@model Projeto1_Web2_IF_Lucas.Models.TbPaciente
+@*
+    Lucas Wilman da Silva Crispim
+    Confirmação de exclusão de um paciente do profissional logado.
+*@
+@{
+    ViewData["Title"] = "Excluir paciente";
+}
+
+<h1>Excluir paciente</h1>
+
+<h4 class="text-danger">Tem certeza que deseja excluir este paciente?</h4>
+
+<dl class="row">
+    <dt class="col-sm-3">Nome</dt>
+    <dd class="col-sm-9">@Model.Nome</dd>
+
+    <dt class="col-sm-3">CPF</dt>
+    <dd class="col-sm-9">@Model.Cpf</dd>
+
+    <dt class="col-sm-3">Nascimento</dt>
+    <dd class="col-sm-9">@Model.DataNascimento.ToString("dd/MM/yyyy")</dd>
+
+    <dt class="col-sm-3">Cidade</dt>
+    <dd class="col-sm-9">@Model.IdCidadeNavigation?.Nome</dd>
+</dl>
+
+<form asp-action="Excluir" asp-route-id="@Model.IdPaciente" method="post">
+    <button type="submit" class="btn btn-danger">Excluir</button>
+    <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+</form>

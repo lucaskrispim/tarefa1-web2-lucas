@@ -45,7 +45,14 @@
             </div>
             <div class="form-group">
                 <label asp-for="Etnia" class="control-label"></label>
-                <input asp-for="Etnia" class="form-control" />
+                <select asp-for="Etnia" class="form-control">
+                    <option value="">(selecione)</option>
+                    <option value="1">Branca</option>
+                    <option value="2">Preta</option>
+                    <option value="3">Parda</option>
+                    <option value="4">Amarela</option>
+                    <option value="5">Indígena</option>
+                </select>
                 <span asp-validation-for="Etnia" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -84,12 +91,20 @@
             </div>
             <div class="form-group">
                 <label asp-for="FlgAtleta" class="control-label"></label>
-                <input asp-for="FlgAtleta" class="form-control" />
+                <select asp-for="FlgAtleta" class="form-control">
+                    <option value="">(não informado)</option>
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                </select>
                 <span asp-validation-for="FlgAtleta" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FlgGestante" class="control-label"></label>
-                <input asp-for="FlgGestante" class="form-control" />
+                <select asp-for="FlgGestante" class="form-control">
+                    <option value="">(não informado)</option>
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                </select>
                 <span asp-validation-for="FlgGestante" class="text-danger"></span>
             </div>
             <div class="form-group">
